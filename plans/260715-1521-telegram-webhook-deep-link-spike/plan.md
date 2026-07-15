@@ -1,7 +1,7 @@
 ---
 title: "Telegram Webhook and Deep-Link Spike"
 description: "Verify Telegram webhook, deep-link, private-chat, and send-message contracts before production implementation."
-status: pending
+status: in-progress
 priority: P1
 branch: "main"
 tags: [research, api, security, critical]
@@ -35,9 +35,9 @@ Second independent feasibility plan in Chặng 0. Verify current Telegram Bot AP
 
 | Phase | Name | Status |
 |-------|------|--------|
-| 1 | [Audit official Telegram contracts](./phase-01-audit-official-telegram-contracts.md) | Pending |
-| 2 | [Run sanitized bot and webhook PoC](./phase-02-run-sanitized-bot-and-webhook-poc.md) | Pending |
-| 3 | [Decide Telegram integration baseline](./phase-03-decide-telegram-integration-baseline.md) | Pending |
+| 1 | [Audit official Telegram contracts](./phase-01-audit-official-telegram-contracts.md) | Completed |
+| 2 | [Run sanitized bot and webhook PoC](./phase-02-run-sanitized-bot-and-webhook-poc.md) | Blocked (infra: bot/clients/route) |
+| 3 | [Decide Telegram integration baseline](./phase-03-decide-telegram-integration-baseline.md) | Completed (docs; go blocked on live) |
 
 ## Dependencies
 

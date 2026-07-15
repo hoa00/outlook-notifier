@@ -1,6 +1,7 @@
 # Copy to .dev.vars locally. Never commit real values.
-# Used only by scripts/spikes/* during Graph permission PoC.
+# Used only by scripts/spikes/* during Graph / Telegram PoCs.
 
+# --- Graph permission PoC ---
 # GRAPH_ACCESS_TOKEN=
 # POC_TRACK=personal
 # NOTIFICATION_URL=https://outlook-notifier.hoadev.com/spikes/graph-poc/notifications
@@ -8,3 +9,16 @@
 # PERMISSION_ATTEMPTED=Mail.ReadBasic
 # MESSAGE_ID=
 # POC_EVIDENCE_TOKEN=
+
+# --- Telegram webhook / deep-link PoC ---
+# TELEGRAM_BOT_TOKEN=
+# TELEGRAM_WEBHOOK_SECRET=
+# WEBHOOK_URL=https://outlook-notifier.hoadev.com/spikes/telegram-poc/webhook
+# EXPECTED_WEBHOOK_URL=https://outlook-notifier.hoadev.com/spikes/telegram-poc/webhook
+# EVIDENCE_BASE_URL=https://outlook-notifier.hoadev.com/spikes/telegram-poc
+# EXPECTED_BOT_USERNAME=
+# EXPECTED_BOT_ID=
+# CONFIRM_CHAT_ID=
+# LOCAL_SECRET_MATRIX=1
+# SKIP_SET_WEBHOOK=
+# SKIP_TEARDOWN=

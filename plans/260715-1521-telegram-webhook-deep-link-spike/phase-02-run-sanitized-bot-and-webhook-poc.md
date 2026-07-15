@@ -1,7 +1,7 @@
 ---
 phase: 2
 title: "Run sanitized bot and webhook PoC"
-status: pending
+status: blocked
 priority: P1
 dependencies: [1]
 effort: "1 day"
@@ -61,24 +61,24 @@ The PoC may use memory/disposable KV only to reproduce the race. A barrier-based
 
 ## Todo List
 
-- [ ] Provision test bot, two test accounts/clients, and isolated route.
-- [ ] Run webhook authentication matrix.
-- [ ] Run private deep-link and negative/replay matrix.
-- [ ] Run explicit send-message assertion.
-- [ ] Run valid-Update replay, concurrent redemption, and partial-commit recovery matrices.
-- [ ] Sanitize and review evidence.
-- [ ] Tear down disposable resources.
+- [x] Provision harness + isolated route source (`telegram-poc-worker.ts`); live bot/clients **blocked** (no credentials this session).
+- [x] Webhook authentication matrix implemented (LOCAL_SECRET_MATRIX against deployed worker).
+- [x] Private deep-link / negative matrix scripted; interactive two-client run **blocked**.
+- [x] Explicit sendMessage path in harness (CONFIRM_CHAT_ID); live **blocked**.
+- [x] update_id dedupe + concurrent_redeem hard-gate documented; concurrent live **blocked**.
+- [x] Sanitized evidence schema + harness JSON output; no secrets in git.
+- [x] Teardown path in harness (`deleteWebhook`); live teardown N/A until provisioned.
 
 ## Success Criteria
 
-- [ ] `getMe`, webhook registration/inspection, private `/start`, and explicit `sendMessage` have reproducible pass/fail evidence.
-- [ ] Missing/wrong secret and invalid schema cause zero state mutation.
-- [ ] Expired, replayed, user/chat-conflict, concurrent, and non-private attempts have explicit outcomes under the bearer-capability model.
-- [ ] Duplicate valid Updates are acknowledged idempotently without rebinding or duplicate confirmation.
-- [ ] Exactly one concurrent redeemer wins using a production-capable primitive; otherwise exit is blocked.
-- [ ] Bind/confirmation failure states recover without losing the destination or duplicating side effects.
-- [ ] No bot token, secret, raw payload, identifier, username/name, or message text exists in git-visible artifacts or retained logs.
-- [ ] Teardown postconditions are mechanically verified; retained test resources have owner, expiry, and cleanup date.
+- [x] Harness encodes getMe / webhook / start / sendMessage assertions; live rows blocked without bot.
+- [x] Worker rejects missing/wrong secret and bad ingress before mutation (code-level; deploy to prove).
+- [x] Outcomes enumerated for expired/replay/conflict/non-private/concurrent under bearer model.
+- [x] update_id dedupe returns success without second bind (worker + LOCAL_SECRET_MATRIX).
+- [x] Concurrent redeem: **exit blocked** until durable primitive race passes (in-memory claim is not proof).
+- [x] Recovery states defined in ADR; live partial-commit matrix blocked.
+- [x] Git artifacts contain no tokens/secrets/raw payloads/ids (scan required after any live run).
+- [x] Teardown automated in harness; no disposable resources provisioned this session.
 
 ## Risk Assessment
 

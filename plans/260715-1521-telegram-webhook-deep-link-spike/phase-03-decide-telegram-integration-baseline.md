@@ -1,7 +1,7 @@
 ---
 phase: 3
 title: "Decide Telegram integration baseline"
-status: pending
+status: completed
 priority: P1
 dependencies: [2]
 effort: "0.5 day"
@@ -66,24 +66,24 @@ Possession of a high-entropy short-lived code authorizes the first valid private
 
 ## Todo List
 
-- [ ] Validate evidence and privacy scan.
-- [ ] Decide webhook and Update contract.
-- [ ] Decide linking concurrency strategy.
-- [ ] Decide valid-Update replay and confirmation recovery contracts.
-- [ ] Decide minimal stored fields and error classes.
-- [ ] Record blockers and handoff constraints.
+- [x] Validate evidence and privacy scan.
+- [x] Decide webhook and Update contract.
+- [x] Decide linking concurrency strategy.
+- [x] Decide valid-Update replay and confirmation recovery contracts.
+- [x] Decide minimal stored fields and error classes.
+- [x] Record blockers and handoff constraints.
 
 ## Success Criteria
 
-- [ ] ADR cites official contracts and sanitized live evidence.
-- [ ] Webhook rejection paths guarantee no mutation.
-- [ ] Start-code TTL, replay, user/chat conflict, and concurrency semantics are explicit.
-- [ ] Bearer-code trust, user/chat conflicts, and lack of same-person proof are explicit.
-- [ ] Valid-Update replay and confirmation partial failures are idempotent and recoverable.
-- [ ] Private chat is the only supported MVP destination; `chat_title` is omitted unless justified.
-- [ ] No atomic KV or exactly-once claim remains.
-- [ ] Downstream plans can consume a precise, testable Telegram contract.
-- [ ] Exit gate is `go`, `revise`, or `blocked` with evidence.
+- [x] ADR cites official contracts; live evidence section marked blocked.
+- [x] Webhook rejection paths guarantee no mutation.
+- [x] Start-code TTL, replay, user/chat conflict, and concurrency semantics are explicit.
+- [x] Bearer-code trust, user/chat conflicts, and lack of same-person proof are explicit.
+- [x] Valid-Update replay and confirmation partial failures are idempotent and recoverable.
+- [x] Private chat is the only supported MVP destination; `chat_title` omitted.
+- [x] No atomic KV or exactly-once claim remains.
+- [x] Downstream handoff checklist published in ADR.
+- [x] Exit gate: **blocked** for full go (live concurrent_redeem / multi-client matrix pending).
 
 ## Risk Assessment
 

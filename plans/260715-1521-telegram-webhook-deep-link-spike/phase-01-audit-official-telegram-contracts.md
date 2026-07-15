@@ -1,7 +1,7 @@
 ---
 phase: 1
 title: "Audit official Telegram contracts"
-status: pending
+status: completed
 priority: P1
 dependencies: []
 effort: "0.5 day"
@@ -53,18 +53,18 @@ No runtime change. Produce a traceability matrix from repository requirement -> 
 
 ## Todo List
 
-- [ ] Capture official-source matrix.
-- [ ] Map repository claims to official contracts.
-- [ ] Define sanitized PoC assertions.
-- [ ] Flag every non-contract assumption.
-- [ ] Define separate threat models for bearer-code replay and valid-Update replay.
+- [x] Capture official-source matrix.
+- [x] Map repository claims to official contracts.
+- [x] Define sanitized PoC assertions.
+- [x] Flag every non-contract assumption.
+- [x] Define separate threat models for bearer-code replay and valid-Update replay.
 
 ## Success Criteria
 
-- [ ] Every PoC assertion traces to a repository requirement and official source.
-- [ ] Deep-link TTL and consume-once are classified as application behavior.
-- [ ] Chat IDs are planned as string/int64-safe values, never 32-bit integers.
-- [ ] No unofficial source or remembered behavior is authoritative.
+- [x] Every PoC assertion traces to a repository requirement and official source.
+- [x] Deep-link TTL and consume-once are classified as application behavior.
+- [x] Chat IDs are planned as string/int64-safe values, never 32-bit integers.
+- [x] No unofficial source or remembered behavior is authoritative.
 
 ## Risk Assessment
 
