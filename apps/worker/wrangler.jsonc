@@ -1,0 +1,49 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "outlook-notifier-worker",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-07-01",
+  "compatibility_flags": ["nodejs_compat"],
+  // Local/test bindings only — no real Cloudflare resource IDs.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "outlook-notifier-local",
+      "database_id": "00000000-0000-0000-0000-000000000001",
+      "migrations_dir": "../../migrations"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "APP_KV",
+      "id": "00000000-0000-0000-0000-000000000002"
+    }
+  ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "MAIL_QUEUE",
+        "queue": "mail-notification-local"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "mail-notification-local",
+        "max_batch_size": 10,
+        "max_retries": 3,
+        "dead_letter_queue": "mail-notification-dlq-local"
+      }
+    ]
+  },
+  "triggers": {
+    "crons": ["0 */6 * * *"]
+  },
+  "vars": {
+    "ENVIRONMENT": "development",
+    "NOTIFICATIONS_KILL_SWITCH": "true",
+    "TOKEN_KEY_VERSION": "1",
+    "MICROSOFT_TENANT": "common",
+    "TELEGRAM_BOT_USERNAME": "example_bot",
+    "APP_BASE_URL": "http://localhost:8787"
+  }
+}

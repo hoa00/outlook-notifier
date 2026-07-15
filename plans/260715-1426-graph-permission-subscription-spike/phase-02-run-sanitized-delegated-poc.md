@@ -1,7 +1,7 @@
 ---
 phase: 2
 title: "Run sanitized delegated PoC"
-status: blocked
+status: pending
 priority: P1
 dependencies: [1]
 effort: "1-2 days"
@@ -11,15 +11,18 @@ effort: "1-2 days"
 
 <!-- Updated: Validation Session 1 - provision isolated tenant/mailbox, custom Cloudflare hostname, self-consent-only behavior -->
 <!-- 2026-07-15 cook: harness created; live run blocked on external infrastructure -->
+<!-- 2026-07-15 roadmap update: live execution intentionally deferred to Chặng 7; concrete hostname/tenant/app values are not Chặng 0 inputs -->
 
 ## Context Links
 
 - Phase 1 evidence matrix.
 - `docs/02-technical-design.md` sections 3.3, 4.1 and 4.2.
-- `docs/project-roadmap.md` Chặng 0 exit gate.
+- `docs/project-roadmap.md` Chặng 7 live-validation gate.
 - Harness: `scripts/spikes/graph-permission-subscription-poc.ts`, `scripts/spikes/poc-worker.ts`
 
 ## Overview
+
+This phase is a deferred live-validation contract for Chặng 7. Its harness may be maintained earlier, but provisioning, concrete runtime values and network execution must not occur during Foundation or logic phases.
 
 Run the smallest live delegated Graph experiment needed to resolve permission and notification-shape uncertainty. Evidence is sanitized immediately; raw external payloads remain transient.
 

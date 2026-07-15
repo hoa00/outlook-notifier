@@ -11,7 +11,7 @@ effort: "1 day"
 
 ## Overview
 
-Run the smallest disposable live experiment that proves Telegram webhook authentication, private `/start` delivery, application-owned one-time linking, and explicit `sendMessage`. Persist only sanitized structure and outcomes.
+Deferred to roadmap Chặng 7: run the smallest disposable live experiment that proves Telegram webhook authentication, private `/start` delivery, application-owned one-time linking, and explicit `sendMessage`. Earlier phases may build fixtures/harnesses only. Persist only sanitized structure and outcomes.
 
 ## Context Links
 

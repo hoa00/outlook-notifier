@@ -88,6 +88,8 @@ Payload dự kiến:
 }
 ```
 
+`<domain>` là placeholder contract. URL public cụ thể chỉ được ánh xạ ở Chặng 7 sau khi logic và hardening hoàn tất.
+
 Không hard-code thời hạn tối đa từ trí nhớ. Triển khai một hằng cấu hình bảo thủ và xác minh theo tài liệu Microsoft Graph tại thời điểm code; gia hạn với buffer đủ lớn.
 
 ### 4.1. Validation request
@@ -159,7 +161,7 @@ Trình tự bắt buộc:
 
 - Bot tạo qua BotFather và do hệ thống sở hữu.
 - Token chỉ nằm trong Workers Secret.
-- Khi deploy, gọi `setWebhook` có secret token nếu Bot API hỗ trợ cho cấu hình đang dùng.
+- Ở Chặng 0–6 chỉ test adapter/fixture. Chặng 7 mới gọi `setWebhook` bằng URL và secret runtime ngoài repo.
 - Telegram webhook kiểm tra secret header, content type và body size.
 - Bot hỗ trợ `/start`, `/help`, `/settings` ở mức tối thiểu.
 
@@ -232,4 +234,3 @@ Không được phép:
 - Hono on Workers: https://developers.cloudflare.com/workers/framework-guides/web-apps/more-web-frameworks/hono/
 - Cloudflare Queues: https://developers.cloudflare.com/queues/
 - Cron Triggers: https://developers.cloudflare.com/workers/configuration/cron-triggers/
-

@@ -1,43 +1,40 @@
 # 04. Kế hoạch triển khai, kiểm thử và vận hành
 
-## 1. Cấu trúc repository đề xuất
+## 1. Cấu trúc repository
+
+**Phase 1 foundation đã có trong repo** (`apps/worker`, `migrations/`, root `pnpm` scripts, CI). Các module OAuth/webhook/queue/UI phía dưới vẫn là skeleton định hướng cho Phase 2+ — chưa implement đầy đủ.
 
 ```text
 .
 ├── apps/
-│   └── worker/
+│   └── worker/                    # Hono Cloudflare Worker (foundation)
 │       ├── src/
 │       │   ├── index.ts
+│       │   ├── app.ts
 │       │   ├── env.ts
-│       │   ├── routes/
-│       │   │   ├── auth.ts
-│       │   │   ├── api.ts
-│       │   │   ├── microsoft-webhook.ts
-│       │   │   └── telegram-webhook.ts
-│       │   ├── services/
-│       │   │   ├── microsoft-auth.ts
-│       │   │   ├── microsoft-graph.ts
-│       │   │   ├── graph-subscriptions.ts
-│       │   │   ├── telegram.ts
-│       │   │   ├── token-crypto.ts
-│       │   │   └── notification.ts
-│       │   ├── queue/
-│       │   │   └── mail-consumer.ts
-│       │   ├── scheduled/
-│       │   │   └── renew-subscriptions.ts
-│       │   ├── repositories/
+│       │   ├── adapters/          # fake Microsoft / Telegram
+│       │   ├── config/            # kill switch
+│       │   ├── errors/
+│       │   ├── logging/           # allowlist logger
+│       │   ├── middleware/        # env, session, CSRF, correlation, errors
+│       │   ├── repositories/      # D1 repos (users, sessions.id_digest, …)
+│       │   ├── routes/            # health (+ later auth/api/webhooks)
 │       │   ├── schemas/
-│       │   └── ui/
+│       │   ├── services/
+│       │   └── session/           # opaque cookie + HMAC digest
 │       ├── test/
-│       └── wrangler.jsonc
+│       └── wrangler.jsonc         # local/test bindings only
 ├── migrations/
+│   └── 0001-initial-schema.sql
+├── scripts/                       # check-forbidden-schema, check-secrets, check-migrations
+├── .github/workflows/ci.yml
 ├── docs/
-├── package.json
+├── package.json                   # pnpm lint|typecheck|test|build|verify
 ├── pnpm-workspace.yaml
 └── tsconfig.json
 ```
 
-Monorepo không bắt buộc nếu chỉ có một Worker; giữ cấu trúc đơn giản hơn nếu không làm giảm separation of concerns.
+Binding/resource IDs trong `wrangler.jsonc` là placeholder local/test. Provision runtime thật thuộc Phase 7 / Chặng 7.
 
 ## 2. Quy tắc coding cho Codex
 
@@ -53,21 +50,25 @@ Monorepo không bắt buộc nếu chỉ có một Worker; giữ cấu trúc đ�
 
 ## 3. Các giai đoạn triển khai
 
-### Phase 0 — Spike xác minh rủi ro
+### Phase 0 — Khóa contract và rủi ro
 
-- Xác minh `Mail.ReadBasic` tạo được subscription và đọc đủ trường cần dùng.
-- Xác minh format resource ID thực tế trong Graph notification.
-- Xác minh thời hạn subscription hiện hành và yêu cầu validation.
-- Xác minh Telegram webhook + deep link + `sendMessage`.
-- Ghi quyết định vào ADR; không tiếp tục bằng giả định sai.
+- Audit official contracts cho `Mail.ReadBasic`, resource ID, expiration/lifecycle, Telegram webhook/deep link/`sendMessage`.
+- Dùng fixture/harness để khóa parser, adapter và failure contract.
+- Ghi ADR; claim cần môi trường thật phải mang trạng thái `provisional` và có fallback/decision owner.
 
 ### Phase 1 — Foundation
 
-- Khởi tạo TypeScript/Hono/Workers.
-- Bind D1, KV, Queue, Cron.
-- Migration schema.
-- Env validation và secret placeholders.
-- Session/auth shell, error model, logging allowlist.
+**Status: in repo (local/test).** `apps/worker` + `migrations/0001-initial-schema.sql` + CI/`pnpm verify` đã có.
+
+- Khởi tạo TypeScript/Hono/Workers (pnpm workspace).
+- Bind D1, KV, Queue, Cron (local placeholders only).
+- Migration schema (incl. `sessions.id_digest`).
+- Env validation và secret placeholders (`.dev.vars.example`).
+- Session/auth shell (opaque cookie, HMAC digest in D1), CSRF shell, error model, logging allowlist.
+- Fake Microsoft/Telegram adapters; system kill switch (default blocked).
+- Root gates: `pnpm lint`, `typecheck`, `test`, `build`, `verify` (+ schema/secrets/migrations checks).
+
+Phase 0–6 chỉ dùng placeholder, fake upstream, fixture và local bindings. Không điền URL, tenant/app/client ID, resource ID, bot token hoặc secret thật.
 
 ### Phase 2 — Microsoft connection
 
@@ -103,13 +104,21 @@ Monorepo không bắt buộc nếu chỉ có một Worker; giữ cấu trúc đ�
 - Account deletion.
 - Security/privacy audit.
 
-### Phase 6 — UI và release
+### Phase 6 — UI và release logic
 
 - Landing/login/dashboard/settings.
 - Connection state UX.
 - Privacy disclosure.
-- End-to-end production-like test.
-- Runbook và rollback.
+- End-to-end bằng test harness.
+- Runbook và checklist rollback.
+
+### Phase 7 — Provision, deploy và live validation
+
+- Provision Entra test tenant/app/mailboxes, Telegram test bot/accounts và Cloudflare resources.
+- Ánh xạ placeholder sang runtime values bằng bindings/secret manager; không ghi giá trị thật vào repo.
+- Apply migrations, deploy Worker, cấu hình Graph/Telegram webhooks.
+- Chạy live PoC, AT-01..12, email-to-Telegram E2E, privacy scan, smoke test và rollback rehearsal.
+- Chốt các ADR `provisional`; dừng release nếu permission/API contract không đạt.
 
 ## 4. Acceptance tests
 
@@ -350,4 +359,3 @@ Trước khi code, hãy:
 
 Sau mỗi phase, chạy lint, typecheck và tests liên quan. Khi hoàn tất, cung cấp bằng chứng test, migration, hướng dẫn cấu hình Entra/Telegram/Cloudflare và danh sách giới hạn còn lại.
 ```
-

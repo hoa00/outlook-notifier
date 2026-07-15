@@ -1,0 +1,33 @@
+{
+  "skill": "ck:cook",
+  "mode": "auto",
+  "task": "Worker Foundation and Safe Runtime Baseline",
+  "planPath": "plans/260715-1645-worker-foundation-safe-runtime",
+  "acceptanceCriteria": [
+    "pnpm lint, typecheck, test, build run local/CI",
+    "D1 migrations clean and store no email metadata",
+    "Env validation accepts placeholders, rejects missing/bad types, never prints secrets",
+    "Logger allowlist, error taxonomy, correlation ID, session/CSRF shell, kill switch tested",
+    "No real URL/tenant/client/resource ID/token/secret or deploy ops"
+  ],
+  "touchpoints": [
+    "apps/worker/src/**",
+    "apps/worker/test/**",
+    "migrations/0001-initial-schema.sql",
+    "scripts/check-*.mjs",
+    ".github/workflows/ci.yml",
+    "package.json",
+    "pnpm-workspace.yaml"
+  ],
+  "publicContracts": [
+    "docs/03-api-data-security.md schema and Env binding names",
+    "opaque session cookie + D1 id_digest",
+    "pnpm verify gate set"
+  ],
+  "blastRadius": [
+    "greenfield worker runtime",
+    "local D1 schema",
+    "CI pipeline"
+  ],
+  "scoutSummary": "Repo was docs-only with spike scripts; no prior application runtime. Foundation scaffolds apps/worker Hono Worker with privacy-safe D1, session shell, and CI gates only."
+}

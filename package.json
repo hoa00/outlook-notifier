@@ -1,0 +1,18 @@
+{
+  "name": "outlook-notifier",
+  "private": true,
+  "packageManager": "pnpm@11.9.0",
+  "scripts": {
+    "lint": "pnpm --filter @outlook-notifier/worker lint",
+    "typecheck": "pnpm --filter @outlook-notifier/worker typecheck",
+    "test": "pnpm --filter @outlook-notifier/worker test",
+    "build": "pnpm --filter @outlook-notifier/worker build",
+    "check:schema": "node scripts/check-forbidden-schema.mjs",
+    "check:secrets": "node scripts/check-secrets.mjs",
+    "check:migrations": "node scripts/check-migrations.mjs",
+    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm check:schema && pnpm check:secrets && pnpm check:migrations"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

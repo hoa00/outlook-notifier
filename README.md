@@ -42,6 +42,15 @@ Xây dựng ứng dụng giúp người dùng nhận thông báo Telegram gần 
 - AI phân loại hoặc tóm tắt nội dung email.
 - Đồng bộ lịch sử mailbox.
 
+## Local setup (Foundation)
+
+```bash
+pnpm install
+pnpm verify
+```
+
+Foundation is local/test only (`apps/worker`, D1 migration, CI gates). Do not provision real Cloudflare, Entra, or Telegram resources here — that stays deferred to Chặng 7.
+
 ## Nguyên tắc xử lý điểm chưa rõ
 
 Codex không được tự mở rộng quyền Microsoft hoặc phạm vi lưu dữ liệu. Nếu tài liệu chưa quy định một hành vi có ảnh hưởng đến quyền riêng tư, chi phí hoặc mô hình cấp quyền, phải dừng và yêu cầu quyết định thay vì tự suy đoán.

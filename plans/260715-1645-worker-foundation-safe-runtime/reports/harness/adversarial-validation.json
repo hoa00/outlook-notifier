@@ -1,0 +1,9 @@
+{
+  "decision": "PASS",
+  "disprovenClaims": [],
+  "unverifiedClaims": [
+    "GitHub Actions CI green on a real PR runner (local pnpm verify only)"
+  ],
+  "missingProof": [],
+  "reachableRegressions": []
+}

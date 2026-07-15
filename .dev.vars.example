@@ -1,24 +1,22 @@
-# Copy to .dev.vars locally. Never commit real values.
-# Used only by scripts/spikes/* during Graph / Telegram PoCs.
+# Copy to apps/worker/.dev.vars for local wrangler dev.
+# Never commit real values. Foundation uses placeholders only.
 
-# --- Graph permission PoC ---
+ENVIRONMENT=development
+NOTIFICATIONS_KILL_SWITCH=true
+TOKEN_KEY_VERSION=1
+MICROSOFT_TENANT=common
+TELEGRAM_BOT_USERNAME=example_bot
+APP_BASE_URL=http://localhost:8787
+
+# Placeholder secrets for local/test only — replace outside the repo at Chặng 7.
+MICROSOFT_CLIENT_ID=00000000-0000-0000-0000-000000000010
+MICROSOFT_CLIENT_SECRET=replace-me-local-only
+TOKEN_ENCRYPTION_KEY=0123456789abcdef0123456789abcdef
+TELEGRAM_BOT_TOKEN=000000000:TEST_TELEGRAM_BOT_TOKEN_PLACEHOLDER
+TELEGRAM_WEBHOOK_SECRET=replace-me-local-only
+SESSION_SECRET=replace-me-local-session-secret
+
+# --- Legacy spike PoC vars (scripts/spikes/*) — optional ---
 # GRAPH_ACCESS_TOKEN=
-# POC_TRACK=personal
-# NOTIFICATION_URL=https://outlook-notifier.hoadev.com/spikes/graph-poc/notifications
-# LIFECYCLE_URL=https://outlook-notifier.hoadev.com/spikes/graph-poc/lifecycle
-# PERMISSION_ATTEMPTED=Mail.ReadBasic
-# MESSAGE_ID=
-# POC_EVIDENCE_TOKEN=
-
-# --- Telegram webhook / deep-link PoC ---
-# TELEGRAM_BOT_TOKEN=
 # TELEGRAM_WEBHOOK_SECRET=
-# WEBHOOK_URL=https://outlook-notifier.hoadev.com/spikes/telegram-poc/webhook
-# EXPECTED_WEBHOOK_URL=https://outlook-notifier.hoadev.com/spikes/telegram-poc/webhook
-# EVIDENCE_BASE_URL=https://outlook-notifier.hoadev.com/spikes/telegram-poc
-# EXPECTED_BOT_USERNAME=
-# EXPECTED_BOT_ID=
-# CONFIRM_CHAT_ID=
-# LOCAL_SECRET_MATRIX=1
-# SKIP_SET_WEBHOOK=
-# SKIP_TEARDOWN=
+# WEBHOOK_URL=

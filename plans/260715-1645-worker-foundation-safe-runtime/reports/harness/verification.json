@@ -1,0 +1,43 @@
+{
+  "commands": [
+    {
+      "command": "pnpm lint",
+      "status": "pass",
+      "exitCode": 0,
+      "timestamp": "2026-07-15T17:20:00.000Z",
+      "summary": "eslint src test clean"
+    },
+    {
+      "command": "pnpm typecheck",
+      "status": "pass",
+      "exitCode": 0,
+      "timestamp": "2026-07-15T17:20:00.000Z",
+      "summary": "tsc --noEmit clean"
+    },
+    {
+      "command": "pnpm test",
+      "status": "pass",
+      "exitCode": 0,
+      "timestamp": "2026-07-15T17:20:00.000Z",
+      "summary": "28/28 vitest workers tests passed"
+    },
+    {
+      "command": "pnpm build",
+      "status": "pass",
+      "exitCode": 0,
+      "timestamp": "2026-07-15T17:20:00.000Z",
+      "summary": "wrangler deploy --dry-run only (no live deploy)"
+    },
+    {
+      "command": "pnpm check:schema && pnpm check:secrets && pnpm check:migrations",
+      "status": "pass",
+      "exitCode": 0,
+      "timestamp": "2026-07-15T17:20:00.000Z",
+      "summary": "privacy schema, secret/runtime-value, migration embed sync gates green"
+    }
+  ],
+  "beforeAfter": {
+    "before": "docs-only repo, no Worker package or tests",
+    "after": "apps/worker foundation with 28 tests, CI, migration, safe runtime shell"
+  }
+}

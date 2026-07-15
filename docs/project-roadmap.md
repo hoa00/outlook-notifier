@@ -14,7 +14,8 @@ Nguồn yêu cầu:
 
 ## 2. Nguyên tắc thực thi
 
-- Đi tuần tự theo cổng chặng; không code tiếp trên giả định API chưa được xác minh.
+- Đi tuần tự theo cổng chặng logic. Claim chỉ có thể xác minh bằng môi trường thật phải được đánh dấu `provisional`, cô lập sau adapter và chặn release tại Chặng 7.
+- Từ Chặng 0 đến Chặng 6 chỉ dùng placeholder, fake client, fixture và contract test. Không provision hoặc điền URL, tenant/app/client ID, resource ID, bot token hay secret thật vào repo.
 - Ưu tiên một Worker module, ít dependency, không thêm Durable Objects trong MVP.
 - Mỗi plan nhỏ tạo ra một deliverable kiểm chứng được và giữ repo ở trạng thái build/test được.
 - Test và kiểm soát quyền riêng tư nằm trong từng chặng, không dồn về cuối.
@@ -26,14 +27,15 @@ Nguồn yêu cầu:
 
 | Chặng | Kết quả chính | Phụ thuộc | Cổng chuyển chặng |
 |---|---|---|---|
-| 0. Khóa giả định | ADR và bằng chứng PoC cho các rủi ro ngoài hệ thống | Không | Các giả định API quan trọng đã được xác minh hoặc scope đã giảm có chủ đích |
-| 1. Nền tảng an toàn | Worker chạy được, bindings, schema, session shell, CI | Chặng 0 | Build/typecheck/test/migration đạt; logger không rò rỉ dữ liệu |
-| 2. Kết nối Microsoft | OAuth delegated, token mã hóa, subscription và webhook hợp lệ | Chặng 1 | Kết nối/ngắt kết nối thật; forged webhook bị từ chối |
-| 3. Kết nối Telegram | Deep link one-time, webhook, destination và test message | Chặng 1 | Link chỉ dùng một lần; private chat gửi test thành công |
-| 4. Luồng thông báo dọc | Graph webhook → Queue → Graph fetch → Telegram | Chặng 2, 3 | Email thật tạo notification; không lưu/log email metadata |
+| 0. Khóa contract | ADR, official-contract audit và harness cho rủi ro ngoài hệ thống | Không | Contract đã khóa hoặc đánh dấu provisional với fallback rõ ràng |
+| 1. Nền tảng an toàn | Worker local chạy được, binding contracts, schema, session shell, CI | Chặng 0 | Build/typecheck/test/migration dry-run đạt; logger không rò rỉ dữ liệu |
+| 2. Logic Microsoft | OAuth, token mã hóa, subscription và webhook qua fake/contract tests | Chặng 1 | Contract tests đạt; forged webhook không enqueue; chưa cần credential thật |
+| 3. Logic Telegram | Deep link one-time, webhook, destination và test-message adapter | Chặng 1 | Fixture/concurrency tests đạt; chưa cần bot hoặc webhook thật |
+| 4. Luồng thông báo dọc | Graph webhook → Queue → Graph fetch → Telegram qua integration harness | Chặng 2, 3 | Vertical slice giả lập đạt; không lưu/log email metadata |
 | 5. Độ tin cậy và vòng đời | Renewal, recovery, dedupe, retry, deletion, kill switch | Chặng 4 | Failure matrix và acceptance tests trọng yếu đạt |
-| 6. Sản phẩm và release | Landing/dashboard/settings/privacy + deploy production-like | Chặng 5 | User journey E2E, security/privacy audit, rollback rehearsal đạt |
-| 7. Ổn định sau phát hành | Theo dõi, sửa lỗi, xác nhận SLO và chi phí | Chặng 6 | MVP ổn định trong cửa sổ quan sát đã chọn |
+| 6. Sản phẩm và release logic | Landing/dashboard/settings/privacy + release checklist | Chặng 5 | User journey qua test harness và security/privacy audit đạt |
+| 7. Provision, deploy và live validation | Điền runtime values ngoài repo, deploy test thật, live E2E và rollback | Chặng 6 | Graph/Telegram live gate, AT-01..12, privacy scan và rollback đạt |
+| 8. Ổn định sau phát hành | Theo dõi, sửa lỗi, xác nhận SLO và chi phí | Chặng 7 | MVP ổn định trong cửa sổ quan sát đã chọn |
 
 Luồng dependency chính:
 
@@ -45,8 +47,9 @@ flowchart LR
     P2 --> P4["4. Luồng thông báo dọc"]
     P3 --> P4
     P4 --> P5["5. Reliability & lifecycle"]
-    P5 --> P6["6. UI & release"]
-    P6 --> P7["7. Stabilization"]
+    P5 --> P6["6. UI & release logic"]
+    P6 --> P7["7. Provision & live deploy"]
+    P7 --> P8["8. Stabilization"]
 ```
 
 Chặng 2 và 3 độc lập về nghiệp vụ sau khi Chặng 1 hoàn tất, nhưng mặc định vẫn dev tuần tự để giảm context switching. Chỉ chạy song song khi đã chia ownership file rõ ràng trong plan chi tiết.
@@ -55,13 +58,13 @@ Chặng 2 và 3 độc lập về nghiệp vụ sau khi Chặng 1 hoàn tất, n
 
 ### Chặng 0 — Khóa giả định và quyết định kiến trúc
 
-**Spike status (2026-07-15):** Official Graph + Telegram contract audits and ADRs drafted under `docs/spikes/` and `docs/decisions/`. Graph live PoC **blocked** on Entra/M365/Outlook.com + Worker. Telegram live PoC **blocked** on project-owned test bot, two private clients, and isolated `/spikes/telegram-poc/*` route (harness ready). Chặng 0 exit gate remains **open** until sanitized live pass/fail exists for both spikes.
+**Status (2026-07-15):** Graph + Telegram official-contract audits and ADRs under `docs/spikes/` and `docs/decisions/`. Live PoC deferred to Chặng 7. Claims that need real platform behavior stay `provisional` — they do not block Foundation, but still block release.
 
 **Mục tiêu:** loại bỏ sớm các rủi ro có thể làm đổi permission, schema hoặc recovery policy.
 
 **Phạm vi:**
 
-- Xác minh bằng tài liệu chính thức và PoC rằng `Mail.ReadBasic` cho phép tạo subscription và đọc tập trường tối thiểu.
+- Xác minh bằng tài liệu chính thức và contract harness rằng `Mail.ReadBasic` là baseline hợp lý; giữ adapter cho fallback đã phê duyệt nếu live gate thất bại.
 - Ghi nhận resource/message ID thực nhận từ change notification.
 - Xác minh thời hạn subscription, validation contract và lifecycle notification hiện hành.
 - Xác minh Telegram `setWebhook`, secret header, deep link `/start` và `sendMessage`.
@@ -74,9 +77,9 @@ Chặng 2 và 3 độc lập về nghiệp vụ sau khi Chặng 1 hoàn tất, n
 - ADR về tenant model.
 - ADR về Graph permission và tập trường cho phép.
 - ADR về subscription/lifecycle/missed policy.
-- Báo cáo PoC có request/response đã khử nhạy cảm và kết luận pass/fail.
+- Harness/fixture không chứa dữ liệu thật; danh sách claim cần live validation ở Chặng 7.
 
-**Exit gate:** không còn giả định nào có thể buộc nâng từ `Mail.ReadBasic` lên `Mail.Read` hoặc thay đổi chính sách dữ liệu mà chưa được chủ sản phẩm phê duyệt.
+**Exit gate:** mọi contract có nguồn, test seam và fallback/decision owner; claim chưa test live được ghi `provisional`. Không được tuyên bố M0 đã live-verified.
 
 **Các plan nhỏ nên lập:**
 
@@ -85,6 +88,8 @@ Chặng 2 và 3 độc lập về nghiệp vụ sau khi Chặng 1 hoàn tất, n
 3. `architecture-decisions-baseline`.
 
 ### Chặng 1 — Nền tảng an toàn và có thể kiểm thử
+
+**Status (2026-07-15): complete (local/test only).** Foundation exit evidence: `apps/worker` Hono Worker in repo; `migrations/0001-initial-schema.sql` (incl. `sessions.id_digest`); env validation; opaque cookie sessions (HMAC digest in D1); CSRF shell; allowlist logger; kill switch; fake Microsoft/Telegram adapters; CI (`.github/workflows/ci.yml`); scripts `check-forbidden-schema` / `check-secrets` / `check-migrations`; root `pnpm lint|typecheck|test|build|verify`. Gate met for local/test — no real Cloudflare/Entra/Telegram provisioning (deferred to Chặng 7).
 
 **Mục tiêu:** tạo skeleton production-shaped trước khi thêm integration thật.
 
@@ -100,9 +105,9 @@ Chặng 2 và 3 độc lập về nghiệp vụ sau khi Chặng 1 hoàn tất, n
 
 **Không thuộc chặng:** OAuth hoàn chỉnh, gọi Graph/Telegram thật, dashboard hoàn chỉnh.
 
-**Exit gate:** deploy được môi trường dev; migration chạy sạch; CI xanh; test chứng minh logger không ghi raw payload/token/email fields.
+**Exit gate:** chạy local/Miniflare được; migration dry-run sạch; CI xanh; test chứng minh logger không ghi raw payload/token/email fields. Chưa provision Cloudflare resource thật. **Đạt ở mức local/test** (`pnpm verify`); chưa deploy/provision runtime thật.
 
-**Các plan nhỏ nên lập:**
+**Các plan nhỏ (đã giao Foundation):**
 
 1. `worker-project-foundation`.
 2. `d1-schema-and-repositories`.
@@ -125,7 +130,7 @@ Chặng 2 và 3 độc lập về nghiệp vụ sau khi Chặng 1 hoàn tất, n
 
 **Không thuộc chặng:** fetch nội dung message để gửi Telegram; lifecycle recovery đầy đủ; UI polish.
 
-**Exit gate:** AT-01 và phần Microsoft của AT-12 đạt trên HTTPS production-like; token mã hóa trong D1; webhook giả không enqueue.
+**Exit gate:** AT-01 và phần Microsoft của AT-12 đạt bằng fake upstream/contract integration; token mã hóa trong D1 test; webhook giả không enqueue. OAuth/subscription live dời Chặng 7.
 
 **Các plan nhỏ nên lập:**
 
@@ -151,7 +156,7 @@ Chặng 2 và 3 độc lập về nghiệp vụ sau khi Chặng 1 hoàn tất, n
 
 **Không thuộc chặng:** group chat, bot riêng, notification từ email thật.
 
-**Exit gate:** AT-02 và phần Telegram của AT-12 đạt; code hết hạn/tái sử dụng bị từ chối; bot token không xuất hiện ở frontend/log.
+**Exit gate:** AT-02 và phần Telegram của AT-12 đạt bằng fixture/fake adapter; code hết hạn/tái sử dụng bị từ chối; không cần bot token thật. Live bot/deep link dời Chặng 7.
 
 **Các plan nhỏ nên lập:**
 
@@ -211,7 +216,7 @@ Chặng 2 và 3 độc lập về nghiệp vụ sau khi Chặng 1 hoàn tất, n
 
 ### Chặng 6 — Trải nghiệm sản phẩm và phát hành MVP
 
-**Mục tiêu:** hoàn thiện user journey và phát hành có kiểm soát.
+**Mục tiêu:** hoàn thiện user journey và release logic trước khi kết nối hạ tầng thật.
 
 **Phạm vi:**
 
@@ -219,21 +224,40 @@ Chặng 2 và 3 độc lập về nghiệp vụ sau khi Chặng 1 hoàn tất, n
 - Settings `enabled`, `showSender`, `showSubject`, `timezone`.
 - UX cho reauthorization, degraded subscription, unreachable Telegram và moved-to-Inbox limitation.
 - Privacy disclosure/consent copy; không hiển thị email event history.
-- Hướng dẫn Entra app, BotFather, Workers bindings, local setup và deploy.
-- Production-like E2E, smoke tests, migration/deploy/rollback rehearsal.
+- Hướng dẫn placeholder cho Entra, BotFather, Workers bindings và local setup; chưa điền giá trị thật.
+- E2E qua test harness và chuẩn bị checklist migration/deploy/rollback.
 - Security/privacy sign-off và checklist bàn giao.
 
-**Exit gate:** user journey 1–10 trong product requirements chạy hoàn chỉnh; toàn bộ Definition of Done MVP và checklist bàn giao đạt; rollback không làm mất khả năng decrypt token.
+**Exit gate:** user journey 1–10 chạy qua test harness; UI/security/privacy checklist đạt. Definition of Done live và rollback rehearsal thuộc Chặng 7.
 
 **Các plan nhỏ nên lập:**
 
 1. `dashboard-and-settings-ui`.
 2. `connection-state-and-recovery-ux`.
 3. `privacy-consent-and-help-content`.
-4. `production-deployment-and-smoke-tests`.
-5. `mvp-release-readiness-review`.
+4. `mvp-release-readiness-review`.
 
-### Chặng 7 — Ổn định sau phát hành
+### Chặng 7 — Provision runtime, deploy test thật và live validation
+
+**Mục tiêu:** chỉ sau khi logic/hardening/UI hoàn thiện mới ánh xạ placeholder sang runtime values, deploy môi trường test production-like và quyết định go/no-go.
+
+**Phạm vi:**
+
+- Inventory và provision Entra tenant/app/test mailboxes, Telegram test bot/accounts, Cloudflare Worker/D1/KV/Queue/DLQ/Cron/routes.
+- Điền `APP_BASE_URL`, tenant model/value, client ID, redirect URI, Graph notification/lifecycle URLs, bot username và binding/resource IDs qua secret manager/Workers bindings; không ghi giá trị thật vào repo/docs.
+- Apply migrations, deploy Worker, đăng ký Graph/Telegram webhooks và chạy live PoC đã hoãn.
+- Chạy AT-01..12, email-to-Telegram E2E, privacy scan D1/KV/Queue/log/DLQ, smoke test, rollback/teardown và rotation rehearsal.
+- Chốt hoặc sửa các ADR `provisional`, đặc biệt permission `Mail.ReadBasic`/`Mail.Read` và platform behavior.
+
+**Exit gate:** toàn bộ live gate có bằng chứng đã khử nhạy cảm; không có secret/identifier trong git; rollback thành công; mọi ADR provisional đã được chốt hoặc release bị dừng.
+
+**Các plan nhỏ nên lập:**
+
+1. `runtime-provisioning-and-secret-inventory`.
+2. `production-like-deployment-and-live-poc`.
+3. `live-e2e-privacy-and-rollback-gate`.
+
+### Chặng 8 — Ổn định sau phát hành
 
 **Mục tiêu:** xác nhận hệ thống đáp ứng độ tin cậy, quyền riêng tư và chi phí trong thực tế trước khi mở rộng tính năng.
 
@@ -302,11 +326,11 @@ Một plan không được đóng nếu vi phạm bất kỳ invariant nào:
 
 | Mốc | Bao gồm | Ý nghĩa |
 |---|---|---|
-| M0 — Feasibility locked | Chặng 0 | Có thể đầu tư triển khai mà không dựa trên giả định permission/API |
-| M1 — Connections ready | Chặng 1–3 | Microsoft và Telegram kết nối độc lập, an toàn |
-| M2 — Core value demo | Chặng 4 | Email thật tạo Telegram notification qua pipeline chuẩn |
-| M3 — Release candidate | Chặng 5–6 | Reliability, UI, privacy, deploy và rollback sẵn sàng |
-| M4 — MVP stable | Chặng 7 | Đủ bằng chứng để cân nhắc Version 1.1 |
+| M0 — Contract baseline | Chặng 0 | Contract/ADR đủ để code; live-dependent claims còn provisional |
+| M1 — Connections logic ready | Chặng 1–3 | Microsoft và Telegram logic độc lập đạt contract tests |
+| M2 — Core value simulated | Chặng 4 | Pipeline chuẩn đạt integration harness, chưa tuyên bố live |
+| M3 — Release candidate | Chặng 5–7 | Reliability, UI, privacy, live deploy và rollback đã đạt |
+| M4 — MVP stable | Chặng 8 | Đủ bằng chứng để cân nhắc Version 1.1 |
 
 ## 8. Rủi ro điều phối chính
 
@@ -315,7 +339,7 @@ Một plan không được đóng nếu vi phạm bất kỳ invariant nào:
 | `Mail.ReadBasic` thiếu trường/API | Có thể đổi notification hoặc permission | Chặn tại Chặng 0; ưu tiên bỏ trường, không tự nâng quyền |
 | Chính sách `missed` chưa chốt | Không thể hoàn thiện lifecycle recovery | ADR tại Chặng 0 trước plan recovery |
 | Crash sau Telegram success | Có thể gửi trùng | Công bố best-effort; dedupe + metric + test race |
-| OAuth/Telegram cần endpoint public HTTPS | Local test không đủ | Dùng môi trường dev production-like từ sớm |
+| Hoãn public HTTPS làm tăng rủi ro rework permission/API | Mock không chứng minh hành vi platform thật | Pin official contracts, cô lập adapter, đánh dấu provisional và bắt buộc go/no-go ở Chặng 7 |
 | Test integration vô tình lưu payload | Vi phạm privacy dù production code đúng | Fixture giả, logger allowlist, scan D1/KV/log/DLQ trong test |
 | UI làm trước state machine ổn định | Rework và che lỗi backend | UI hoàn chỉnh sau reliability gate; chỉ shell tối thiểu trước đó |
 

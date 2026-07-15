@@ -1,0 +1,13 @@
+{
+  "highRisk": true,
+  "reasons": [
+    "DB schema / D1 migration introduced",
+    "auth session + CSRF shell",
+    "secret env validation and secret scanner",
+    "CI workflow added"
+  ],
+  "autoStopRequired": true,
+  "humanApproved": true,
+  "largeDiff": true,
+  "domains": ["auth", "db", "secrets", "ci"]
+}

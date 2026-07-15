@@ -3,3 +3,11 @@ node_modules/
 dist/
 .env
 *.local
+.dev.vars
+.wrangler/
+coverage/
+*.tsbuildinfo
+.turbo/
+apps/worker/.wrangler/
+apps/worker/dist/
+apps/worker/coverage/

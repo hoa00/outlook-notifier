@@ -1,0 +1,18 @@
+{
+  "decision": "PASS",
+  "score": 8.5,
+  "criticalCount": 0,
+  "acceptanceCoverage": [
+    "lint/typecheck/test/build + CI workflow",
+    "migration + forbidden-column tests + check:schema",
+    "env.test secret-safe validation",
+    "logger/errors/session/csrf/kill-switch/expiry tests",
+    "check:secrets covers URL/token/uuid classes with path allowlists for spikes/placeholders"
+  ],
+  "regressionProof": [
+    "greenfield — no prior app callers",
+    "pnpm verify 28/28 pass after review fixes"
+  ],
+  "contractStatus": "OK",
+  "blockingReasons": []
+}
