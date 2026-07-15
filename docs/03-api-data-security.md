@@ -93,6 +93,18 @@ CREATE TABLE users (
   UNIQUE(tenant_id, microsoft_user_id)
 );
 
+CREATE TABLE sessions (
+  id_digest TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  expires_at TEXT NOT NULL,
+  revoked_at TEXT,
+  created_at TEXT NOT NULL,
+  last_seen_at TEXT NOT NULL
+);
+
+CREATE INDEX idx_sessions_user_expiry
+  ON sessions(user_id, expires_at);
+
 CREATE TABLE microsoft_connections (
   user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
   encrypted_refresh_token TEXT NOT NULL,
@@ -152,6 +164,8 @@ Không tạo bảng `messages`, `emails`, `notifications_history` hoặc bảng 
 
 `chat_title` là dữ liệu cấu hình Telegram, không phải email; có thể bỏ nếu muốn tối thiểu hóa dữ liệu.
 
+Cookie session chỉ chứa ID ngẫu nhiên opaque. D1 chỉ lưu digest của ID cùng user, expiry và trạng thái revoke; không lưu access/refresh token, profile hoặc authorization payload trong cookie/session record. KV dành cho OAuth state, link code và dedupe TTL ngắn hạn, không phải session store authoritative.
+
 ## 3. Bindings và secrets
 
 Ví dụ tên binding, không đưa giá trị thật vào repo:
@@ -175,6 +189,8 @@ type Env = {
 ```
 
 Non-secret config có thể nằm trong `wrangler.jsonc`; secret phải dùng secret bindings.
+
+Từ Chặng 0–6, các tên trên chỉ là config contract/placeholder cho local test. Giá trị tenant/app/client, URL public, resource ID, bot token và secret thật chỉ được provision ở Chặng 7 qua Workers bindings/secret manager; runtime inventory và giá trị thật không nằm trong repo.
 
 ## 4. Mã hóa token
 
@@ -264,4 +280,3 @@ Không dùng upstream error message nguyên văn làm nội dung UI.
 - Ứng dụng không lưu nội dung hoặc metadata email sau khi gửi.
 - Telegram là bên thứ ba và việc gửi dữ liệu chịu chính sách của Telegram.
 - Người dùng có thể tắt hoặc thu hồi kết nối bất cứ lúc nào.
-

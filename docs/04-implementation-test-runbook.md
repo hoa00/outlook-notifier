@@ -53,13 +53,11 @@ Monorepo không bắt buộc nếu chỉ có một Worker; giữ cấu trúc đ�
 
 ## 3. Các giai đoạn triển khai
 
-### Phase 0 — Spike xác minh rủi ro
+### Phase 0 — Khóa contract và rủi ro
 
-- Xác minh `Mail.ReadBasic` tạo được subscription và đọc đủ trường cần dùng.
-- Xác minh format resource ID thực tế trong Graph notification.
-- Xác minh thời hạn subscription hiện hành và yêu cầu validation.
-- Xác minh Telegram webhook + deep link + `sendMessage`.
-- Ghi quyết định vào ADR; không tiếp tục bằng giả định sai.
+- Audit official contracts cho `Mail.ReadBasic`, resource ID, expiration/lifecycle, Telegram webhook/deep link/`sendMessage`.
+- Dùng fixture/harness để khóa parser, adapter và failure contract.
+- Ghi ADR; claim cần môi trường thật phải mang trạng thái `provisional` và có fallback/decision owner.
 
 ### Phase 1 — Foundation
 
@@ -68,6 +66,8 @@ Monorepo không bắt buộc nếu chỉ có một Worker; giữ cấu trúc đ�
 - Migration schema.
 - Env validation và secret placeholders.
 - Session/auth shell, error model, logging allowlist.
+
+Phase 0–6 chỉ dùng placeholder, fake upstream, fixture và local bindings. Không điền URL, tenant/app/client ID, resource ID, bot token hoặc secret thật.
 
 ### Phase 2 — Microsoft connection
 
@@ -103,13 +103,21 @@ Monorepo không bắt buộc nếu chỉ có một Worker; giữ cấu trúc đ�
 - Account deletion.
 - Security/privacy audit.
 
-### Phase 6 — UI và release
+### Phase 6 — UI và release logic
 
 - Landing/login/dashboard/settings.
 - Connection state UX.
 - Privacy disclosure.
-- End-to-end production-like test.
-- Runbook và rollback.
+- End-to-end bằng test harness.
+- Runbook và checklist rollback.
+
+### Phase 7 — Provision, deploy và live validation
+
+- Provision Entra test tenant/app/mailboxes, Telegram test bot/accounts và Cloudflare resources.
+- Ánh xạ placeholder sang runtime values bằng bindings/secret manager; không ghi giá trị thật vào repo.
+- Apply migrations, deploy Worker, cấu hình Graph/Telegram webhooks.
+- Chạy live PoC, AT-01..12, email-to-Telegram E2E, privacy scan, smoke test và rollback rehearsal.
+- Chốt các ADR `provisional`; dừng release nếu permission/API contract không đạt.
 
 ## 4. Acceptance tests
 
@@ -350,4 +358,3 @@ Trước khi code, hãy:
 
 Sau mỗi phase, chạy lint, typecheck và tests liên quan. Khi hoàn tất, cung cấp bằng chứng test, migration, hướng dẫn cấu hình Entra/Telegram/Cloudflare và danh sách giới hạn còn lại.
 ```
-

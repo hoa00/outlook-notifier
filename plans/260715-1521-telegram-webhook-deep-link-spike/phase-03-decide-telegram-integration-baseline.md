@@ -3,7 +3,7 @@ phase: 3
 title: "Decide Telegram integration baseline"
 status: pending
 priority: P1
-dependencies: [2]
+dependencies: [1]
 effort: "0.5 day"
 ---
 
@@ -11,12 +11,12 @@ effort: "0.5 day"
 
 ## Overview
 
-Convert reviewed evidence into a Telegram integration ADR and a clear go/revise/blocked handoff for the architecture baseline and Foundation plans.
+Convert official-contract evidence and fixture/harness findings into a **provisional** Telegram integration ADR for Foundation. Chặng 7 live evidence must later confirm or revise it before release.
 
 ## Context Links
 
 - Phase 1 contract matrix.
-- Phase 2 sanitized live evidence.
+- Phase 2 live-evidence checklist (execution deferred to Chặng 7).
 - `docs/01-product-requirements.md` FR-04.
 - `docs/02-technical-design.md` section 6.
 - `docs/03-api-data-security.md` Telegram destination schema and threat model.
@@ -24,7 +24,7 @@ Convert reviewed evidence into a Telegram integration ADR and a clear go/revise/
 ## Requirements
 
 - Functional: decide webhook registration/authentication, accepted Update subset, `update_id` replay gate, private-chat bearer binding, start-code format/TTL, concurrency-safe redemption, bind/confirmation recovery, stored destination fields, and error classes.
-- Non-functional: least data; explicit limits; no false atomicity or exactly-once guarantee; named blockers.
+- Non-functional: least data; explicit limits; no false atomicity or exactly-once guarantee; named provisional claims and live blockers.
 
 ## Architecture
 

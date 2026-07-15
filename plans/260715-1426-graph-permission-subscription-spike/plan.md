@@ -1,7 +1,7 @@
 ---
 title: "Graph Permission and Subscription Spike"
 description: "Khóa tính khả thi của Mail.ReadBasic và Graph Inbox subscription trước khi bắt đầu nền tảng MVP."
-status: in-progress
+status: pending
 priority: P1
 branch: ""
 tags: [research, api, auth, critical]
@@ -32,13 +32,13 @@ Phát hiện hard-review ban đầu: tài liệu Microsoft hiện liệt kê `Ma
 | Phase | Name | Status |
 |-------|------|--------|
 | 1 | [Audit official Graph contracts](./phase-01-audit-official-graph-contracts.md) | Completed |
-| 2 | [Run sanitized delegated PoC](./phase-02-run-sanitized-delegated-poc.md) | Blocked (infra) |
+| 2 | [Run sanitized delegated PoC](./phase-02-run-sanitized-delegated-poc.md) | Deferred to roadmap Chặng 7 |
 | 3 | [Decide permission and subscription baseline](./phase-03-decide-permission-and-subscription-baseline.md) | Completed (exit: blocked) |
 
 ## Dependencies
 
 - Cross-plan: none; đây là điểm bắt đầu roadmap.
-- Execution prerequisites to provision inside Phase 2: Entra tenant thử nghiệm do chủ dự án quản lý, Microsoft 365 trial/test mailbox, Outlook.com test account, Entra app hỗ trợ work/school + personal accounts, Cloudflare Worker tại `outlook-notifier.hoadev.com`.
+- Execution prerequisites are intentionally deferred to roadmap Chặng 7: project-owned Entra test tenant/mailbox, Outlook.com test account, Entra app and public Cloudflare Worker.
 - Không dùng tenant hoặc admin công ty. Nếu Microsoft không cung cấp trial/mailbox phù hợp, Phase 2 ghi blocker/cost thay vì đổi sang tài khoản công ty.
 
 ## Success Criteria
@@ -135,3 +135,9 @@ Phát hiện hard-review ban đầu: tài liệu Microsoft hiện liệt kê `Ma
 ## Open Questions
 
 - None for plan validation. Availability/price of a Microsoft 365 trial/test mailbox remains an execution prerequisite to verify, not a design decision.
+
+## Roadmap Deferral — 2026-07-15
+
+- Live Phase 2 is no longer a blocker for Foundation; it is an input to the final Chặng 7 live-validation gate.
+- Current permission/subscription ADRs remain `provisional`; no release may pass until the sanitized live matrix resolves them.
+- Exact hostname, tenant/app/client values, redirect/webhook URLs and secrets must not be filled in during logic phases.

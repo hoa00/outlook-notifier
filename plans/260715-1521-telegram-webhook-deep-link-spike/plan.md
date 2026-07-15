@@ -20,7 +20,7 @@ Second independent feasibility plan in Chặng 0. Verify current Telegram Bot AP
 
 ## Scope
 
-- In: official contract audit; disposable test bot/Worker PoC; sanitized evidence; webhook/deep-link ADR; teardown.
+- In now: official contract audit, fixture/harness design and provisional webhook/deep-link ADR. Disposable live bot/Worker PoC and teardown execute in roadmap Chặng 7.
 - Out: production KV/D1/session code; dashboard; Graph integration; groups; multiple destinations; email notification delivery.
 - Invariant: never commit bot tokens, webhook secrets, raw Update bodies, Telegram names/usernames, chat IDs, or message text.
 
@@ -36,14 +36,14 @@ Second independent feasibility plan in Chặng 0. Verify current Telegram Bot AP
 | Phase | Name | Status |
 |-------|------|--------|
 | 1 | [Audit official Telegram contracts](./phase-01-audit-official-telegram-contracts.md) | Pending |
-| 2 | [Run sanitized bot and webhook PoC](./phase-02-run-sanitized-bot-and-webhook-poc.md) | Pending |
+| 2 | [Run sanitized bot and webhook PoC](./phase-02-run-sanitized-bot-and-webhook-poc.md) | Deferred to roadmap Chặng 7 |
 | 3 | [Decide Telegram integration baseline](./phase-03-decide-telegram-integration-baseline.md) | Pending |
 
 ## Dependencies
 
 - Cross-plan: none. The unfinished Graph spike is independent; do not add a false dependency.
-- Execution prerequisites: project-owned Telegram test bot, two independently controlled private test accounts/clients, and isolated HTTPS Worker route.
-- Downstream: future `architecture-decisions-baseline` and Foundation remain blocked until this plan and Graph live evidence are resolved.
+- Execution prerequisites for the live matrix are deferred to Chặng 7: project-owned Telegram test bot, two private test accounts/clients and isolated HTTPS Worker route.
+- Downstream: Foundation needs the official contract audit and provisional ADR, not live bot/Worker evidence. Release still depends on the deferred live matrix.
 
 ## Architecture Decision Boundary
 
@@ -128,3 +128,9 @@ rg -n '(bot[0-9]+:|api\.telegram\.org/bot[0-9]|chat_id\s*[:=]\s*[0-9])' plans do
 ## Open Questions
 
 - None requiring product input before planning. Live credentials/infrastructure are execution prerequisites, not plan-design choices.
+
+## Roadmap Deferral — 2026-07-15
+
+- Phase 1 and the provisional ADR remain the immediate Chặng 0 work.
+- Phase 2 live execution is moved to Chặng 7 after application logic/hardening is complete.
+- Bot identity, webhook URL, account identifiers and secrets stay outside the repo and are not required for Foundation.
