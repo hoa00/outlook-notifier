@@ -55,6 +55,8 @@ Chặng 2 và 3 độc lập về nghiệp vụ sau khi Chặng 1 hoàn tất, n
 
 ### Chặng 0 — Khóa giả định và quyết định kiến trúc
 
+**Spike status (2026-07-15):** Official Graph contract audit + ADRs drafted under `docs/spikes/` and `docs/decisions/`. Live delegated PoC is **blocked** on project-owned Entra/M365/Outlook.com + Worker at `outlook-notifier.hoadev.com`. Chặng 0 exit gate remains **open** until sanitized live pass/fail exists for personal and isolated work/school.
+
 **Mục tiêu:** loại bỏ sớm các rủi ro có thể làm đổi permission, schema hoặc recovery policy.
 
 **Phạm vi:**

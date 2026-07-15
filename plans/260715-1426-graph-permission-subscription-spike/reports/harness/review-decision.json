@@ -1,0 +1,14 @@
+{
+  "stage": "finalize",
+  "decision": "PASS_WITH_RISK",
+  "score": 8.5,
+  "critical_count": 0,
+  "warning_count": 4,
+  "summary": "Docs/harness spike meets hard-mode acceptance; Chặng 0 exit remains blocked until live PoC.",
+  "autoApproved": false,
+  "humanApprovalRequired": true,
+  "reasons": [
+    "Live Entra/M365/Outlook.com/Worker infrastructure not provisioned",
+    "Permission baseline cannot be go without sanitized A1-A7 matrix"
+  ]
+}

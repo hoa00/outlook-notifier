@@ -1,7 +1,7 @@
 ---
 title: "Graph Permission and Subscription Spike"
 description: "Khóa tính khả thi của Mail.ReadBasic và Graph Inbox subscription trước khi bắt đầu nền tảng MVP."
-status: pending
+status: in-progress
 priority: P1
 branch: ""
 tags: [research, api, auth, critical]
@@ -31,9 +31,9 @@ Phát hiện hard-review ban đầu: tài liệu Microsoft hiện liệt kê `Ma
 
 | Phase | Name | Status |
 |-------|------|--------|
-| 1 | [Audit official Graph contracts](./phase-01-audit-official-graph-contracts.md) | Pending |
-| 2 | [Run sanitized delegated PoC](./phase-02-run-sanitized-delegated-poc.md) | Pending |
-| 3 | [Decide permission and subscription baseline](./phase-03-decide-permission-and-subscription-baseline.md) | Pending |
+| 1 | [Audit official Graph contracts](./phase-01-audit-official-graph-contracts.md) | Completed |
+| 2 | [Run sanitized delegated PoC](./phase-02-run-sanitized-delegated-poc.md) | Blocked (infra) |
+| 3 | [Decide permission and subscription baseline](./phase-03-decide-permission-and-subscription-baseline.md) | Completed (exit: blocked) |
 
 ## Dependencies
 

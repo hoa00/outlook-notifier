@@ -1,7 +1,7 @@
 ---
 phase: 1
 title: "Audit official Graph contracts"
-status: pending
+status: completed
 priority: P1
 dependencies: []
 effort: "0.5-1 day"
@@ -10,6 +10,7 @@ effort: "0.5-1 day"
 # Phase 1: Audit official Graph contracts
 
 <!-- Updated: Validation Session 1 - two-account matrix, self-consent-only policy, conditional Mail.Read fallback -->
+<!-- Completed: 2026-07-15 cook — official matrix in docs/spikes/graph-permission-subscription-spike.md -->
 
 ## Context Links
 
@@ -17,6 +18,7 @@ effort: "0.5-1 day"
 - `docs/02-technical-design.md` sections 3, 4 and 10.
 - `docs/04-implementation-test-runbook.md` Phase 0.
 - `docs/project-roadmap.md` Chặng 0 and proposed starting point.
+- Output: `docs/spikes/graph-permission-subscription-spike.md`
 
 ## Overview
 
@@ -33,7 +35,7 @@ No runtime architecture change. Output is a traceability matrix mapping reposito
 
 ## Related Code Files
 
-- Create: `/Users/hoadev/Projects/pet/outlook-notifier/docs/spikes/graph-permission-subscription-spike.md` during implementation.
+- Create: `docs/spikes/graph-permission-subscription-spike.md` during implementation.
 - Modify: none.
 - Delete: none.
 
@@ -49,18 +51,18 @@ No runtime architecture change. Output is a traceability matrix mapping reposito
 
 ## Todo List
 
-- [ ] Capture official-source matrix with date.
-- [ ] Mark permission mismatch as blocking.
-- [ ] Define account/tenant test matrix.
-- [ ] Define expected `unsupported_tenant_consent_policy` outcome without admin-consent fallback.
-- [ ] Define sanitized evidence schema.
+- [x] Capture official-source matrix with date.
+- [x] Mark permission mismatch as blocking.
+- [x] Define account/tenant test matrix.
+- [x] Define expected `unsupported_tenant_consent_policy` outcome without admin-consent fallback.
+- [x] Define sanitized evidence schema.
 
 ## Success Criteria
 
-- [ ] Every PoC assertion traces to a repository requirement and official source.
-- [ ] Conflicting claims are visible and assigned to Phase 2.
-- [ ] Personal and work/school coverage are distinct; tenant-policy denial is not misclassified as a Graph permission failure.
-- [ ] No blog, memory, or beta-only behavior is used as authoritative evidence.
+- [x] Every PoC assertion traces to a repository requirement and official source.
+- [x] Conflicting claims are visible and assigned to Phase 2.
+- [x] Personal and work/school coverage are distinct; tenant-policy denial is not misclassified as a Graph permission failure.
+- [x] No blog, memory, or beta-only behavior is used as authoritative evidence.
 
 ## Risk Assessment
 
@@ -79,3 +81,8 @@ No runtime architecture change. Output is a traceability matrix mapping reposito
 ## Next Steps
 
 - Phase 2 consumes only the explicit assertion matrix.
+
+## Completion notes (2026-07-15)
+
+- Structured create-subscription **table** now lists delegated `Mail.ReadBasic` for message; **prose** still cites `Mail.Read`. Classified `needs-live-proof`, not resolved by assumption.
+- Basic Outlook subscription max lifetime recorded: 10,080 minutes; conservative config proposed in Phase 3 ADR: 4,200 minutes.

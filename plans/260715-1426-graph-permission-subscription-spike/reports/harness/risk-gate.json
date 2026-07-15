@@ -1,0 +1,12 @@
+{
+  "autoStopRequired": true,
+  "humanApproved": false,
+  "riskLevel": "high",
+  "triggers": [
+    "auth",
+    "public_api_contract",
+    "live_external_infrastructure",
+    "auto_mode"
+  ],
+  "notes": "Graph delegated OAuth/subscription live proof pending. Do not finalize as go or start Foundation Graph cook."
+}

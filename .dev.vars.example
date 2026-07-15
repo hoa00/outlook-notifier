@@ -1,0 +1,10 @@
+# Copy to .dev.vars locally. Never commit real values.
+# Used only by scripts/spikes/* during Graph permission PoC.
+
+# GRAPH_ACCESS_TOKEN=
+# POC_TRACK=personal
+# NOTIFICATION_URL=https://outlook-notifier.hoadev.com/spikes/graph-poc/notifications
+# LIFECYCLE_URL=https://outlook-notifier.hoadev.com/spikes/graph-poc/lifecycle
+# PERMISSION_ATTEMPTED=Mail.ReadBasic
+# MESSAGE_ID=
+# POC_EVIDENCE_TOKEN=

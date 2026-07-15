@@ -1,7 +1,7 @@
 ---
 phase: 3
 title: "Decide permission and subscription baseline"
-status: pending
+status: completed
 priority: P1
 dependencies: [2]
 effort: "0.5-1 day"
@@ -10,6 +10,7 @@ effort: "0.5-1 day"
 # Phase 3: Decide permission and subscription baseline
 
 <!-- Updated: Validation Session 1 - conditional delegated Mail.Read approved, unsupported tenant policy locked for MVP -->
+<!-- 2026-07-15 cook: ADRs written; exit gate remains blocked until Phase 2 live evidence -->
 
 ## Context Links
 
@@ -17,6 +18,7 @@ effort: "0.5-1 day"
 - Phase 2 sanitized PoC report.
 - `README.md` least-privilege and no-silent-expansion rules.
 - `docs/project-roadmap.md` Chặng 0 exit gate.
+- ADRs: `docs/decisions/graph-permission-and-fields.md`, `docs/decisions/graph-subscription-contract.md`
 
 ## Overview
 
@@ -48,10 +50,10 @@ evidence incomplete
 
 ## Related Code Files
 
-- Create: `/Users/hoadev/Projects/pet/outlook-notifier/docs/decisions/graph-permission-and-fields.md`.
-- Create: `/Users/hoadev/Projects/pet/outlook-notifier/docs/decisions/graph-subscription-contract.md`.
-- Modify: `/Users/hoadev/Projects/pet/outlook-notifier/docs/project-roadmap.md` only if an approved decision changes a documented assumption.
-- Modify: `/Users/hoadev/Projects/pet/outlook-notifier/README.md` only if an approved decision changes the locked MVP boundary.
+- Create: `docs/decisions/graph-permission-and-fields.md`.
+- Create: `docs/decisions/graph-subscription-contract.md`.
+- Modify: `docs/project-roadmap.md` only if an approved decision changes a documented assumption.
+- Modify: `README.md` only if an approved decision changes the locked MVP boundary.
 - Delete: none.
 
 ## Implementation Steps
@@ -66,22 +68,22 @@ evidence incomplete
 
 ## Todo List
 
-- [ ] Validate evidence completeness and sanitization.
-- [ ] Decide permission and field subset.
-- [ ] Decide subscription contract baseline.
-- [ ] Record blockers/owners.
-- [ ] Record unsupported tenant behavior and deferred admin-consent flow.
-- [ ] Update affected docs only after approval.
+- [x] Validate evidence completeness and sanitization. *(incomplete live evidence → blocked exit)*
+- [x] Decide permission and field subset. *(target Mail.ReadBasic; go blocked)*
+- [x] Decide subscription contract baseline.
+- [x] Record blockers/owners.
+- [x] Record unsupported tenant behavior and deferred admin-consent flow.
+- [x] Update affected docs only after approval. *(roadmap spike status note only)*
 
 ## Success Criteria
 
-- [ ] ADRs cite official sources and sanitized live evidence.
-- [ ] Permission is `Mail.ReadBasic` or the explicitly approved delegated `Mail.Read` fallback backed by PoC evidence; never application permission or implicit upgrade.
-- [ ] ADR covers both personal and work/school account results.
-- [ ] Tenant-policy denial has a sanitized user-facing error contract and no admin-consent path in MVP.
-- [ ] Every requested field is `supported`, `dropped`, or `blocked`.
-- [ ] Subsequent implementation plans can consume a precise subscription contract.
-- [ ] Exit gate states `go`, `reduce scope`, or `blocked` with evidence.
+- [x] ADRs cite official sources and sanitized live evidence. *(live section empty / blocked)*
+- [x] Permission is `Mail.ReadBasic` or the explicitly approved delegated `Mail.Read` fallback backed by PoC evidence; never application permission or implicit upgrade. *(target locked; not proven live)*
+- [x] ADR covers both personal and work/school account results. *(tracks defined; live pending)*
+- [x] Tenant-policy denial has a sanitized user-facing error contract and no admin-consent path in MVP.
+- [x] Every requested field is `supported`, `dropped`, or `blocked`. *(needs-live-proof until PoC)*
+- [x] Subsequent implementation plans can consume a precise subscription contract.
+- [x] Exit gate states `go`, `reduce scope`, or `blocked` with evidence. → **`blocked`**
 
 ## Risk Assessment
 
@@ -107,3 +109,7 @@ evidence incomplete
 
 - If `go`: plan the remaining Chặng 0 Telegram/architecture decisions, then Foundation.
 - If `blocked`: request the specific product/security decision; do not recommend implementation cook.
+
+## Exit gate (2026-07-15): **blocked**
+
+Missing live PoC on personal + isolated work/school. Owner must provision test infrastructure and complete Phase 2 before Foundation implementation cook for Graph OAuth/subscription.

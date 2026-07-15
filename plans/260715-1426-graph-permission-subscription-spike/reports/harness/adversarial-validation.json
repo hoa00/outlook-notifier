@@ -1,0 +1,16 @@
+{
+  "decision": "PASS_WITH_RISK",
+  "disprovenClaims": [],
+  "unverifiedClaims": [
+    "Mail.ReadBasic can create Inbox message subscriptions at runtime",
+    "Minimal $select fields available under Mail.ReadBasic on both account tracks",
+    "Basic notification resourceData.id is stable for GET message"
+  ],
+  "missingProof": [
+    "Sanitized live evidence JSON for personal track",
+    "Sanitized live evidence JSON for isolated work/school track"
+  ],
+  "reachableRegressions": [
+    "Treating Phase 3 ADR as go would allow Foundation to hard-code unproven permission"
+  ]
+}

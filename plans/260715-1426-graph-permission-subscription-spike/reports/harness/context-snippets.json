@@ -1,0 +1,11 @@
+{
+  "plan": "plans/260715-1426-graph-permission-subscription-spike",
+  "mode": "code+auto+hard",
+  "scout": "docs-only repo; no package.json; spike creates docs/spikes, docs/decisions, scripts/spikes",
+  "acceptance": [
+    "Official matrix with URL+date",
+    "No fake live pass",
+    "ADRs with blocked exit until live PoC",
+    "No secrets committed"
+  ]
+}

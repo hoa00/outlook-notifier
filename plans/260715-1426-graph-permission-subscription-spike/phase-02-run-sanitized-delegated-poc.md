@@ -1,7 +1,7 @@
 ---
 phase: 2
 title: "Run sanitized delegated PoC"
-status: pending
+status: blocked
 priority: P1
 dependencies: [1]
 effort: "1-2 days"
@@ -10,12 +10,14 @@ effort: "1-2 days"
 # Phase 2: Run sanitized delegated PoC
 
 <!-- Updated: Validation Session 1 - provision isolated tenant/mailbox, custom Cloudflare hostname, self-consent-only behavior -->
+<!-- 2026-07-15 cook: harness created; live run blocked on external infrastructure -->
 
 ## Context Links
 
 - Phase 1 evidence matrix.
 - `docs/02-technical-design.md` sections 3.3, 4.1 and 4.2.
 - `docs/project-roadmap.md` Chặng 0 exit gate.
+- Harness: `scripts/spikes/graph-permission-subscription-poc.ts`, `scripts/spikes/poc-worker.ts`
 
 ## Overview
 
@@ -32,9 +34,10 @@ Use a disposable Cloudflare Worker routed through `outlook-notifier.hoadev.com` 
 
 ## Related Code Files
 
-- Create: `/Users/hoadev/Projects/pet/outlook-notifier/scripts/spikes/graph-permission-subscription-poc.ts`.
-- Create: `/Users/hoadev/Projects/pet/outlook-notifier/docs/spikes/graph-permission-subscription-spike.md`.
-- Create: `/Users/hoadev/Projects/pet/outlook-notifier/.dev.vars.example` only if a safe placeholder convention is needed.
+- Create: `scripts/spikes/graph-permission-subscription-poc.ts`.
+- Create: `scripts/spikes/poc-worker.ts`.
+- Create: `docs/spikes/graph-permission-subscription-spike.md`.
+- Create: `.dev.vars.example` only if a safe placeholder convention is needed.
 - Modify: none of the future production Worker modules.
 - Delete: disposable deployed PoC endpoint after evidence capture.
 
@@ -55,20 +58,22 @@ Use a disposable Cloudflare Worker routed through `outlook-notifier.hoadev.com` 
 
 ## Todo List
 
-- [ ] Verify prerequisites without committing secrets.
+- [x] Document missing prerequisites without committing secrets.
+- [x] Create PoC harness + disposable Worker code (not a live pass).
 - [ ] Provision isolated work/school and personal test accounts.
-- [ ] Run baseline subscription assertion.
-- [ ] Verify validation and basic notification shape.
-- [ ] Run minimal message GET assertions.
+- [ ] Deploy Worker on `outlook-notifier.hoadev.com` and register Entra app.
+- [ ] Run baseline subscription assertion (live).
+- [ ] Verify validation and basic notification shape (live).
+- [ ] Run minimal message GET assertions (live).
 - [ ] Sanitize and review evidence.
 - [ ] Tear down disposable infrastructure.
 
 ## Success Criteria
 
 - [ ] Each capability has reproducible pass/fail evidence and exact tested context.
-- [ ] Raw message values, tokens and identifiers are absent from repo, logs and artifacts.
-- [ ] Failed baseline does not cause implicit permission expansion.
-- [ ] Consent-policy denial stops with `unsupported_tenant_consent_policy` and no admin workflow.
+- [x] Raw message values, tokens and identifiers are absent from repo, logs and artifacts.
+- [x] Failed baseline does not cause implicit permission expansion. *(harness enforces)*
+- [x] Consent-policy denial stops with `unsupported_tenant_consent_policy` and no admin workflow. *(product mapping defined; live optional track C)*
 - [ ] Resource/message ID behavior comes from a real notification, not an example payload.
 
 ## Risk Assessment
@@ -95,6 +100,19 @@ Use a disposable Cloudflare Worker routed through `outlook-notifier.hoadev.com` 
 - Delete subscription if created, revoke test authorization as appropriate, remove endpoint and rotate any exposed disposable secret.
 - Remove PoC routes/DNS bindings from `outlook-notifier.hoadev.com` without deleting unrelated zone records.
 
+## Blocker (2026-07-15)
+
+| Prerequisite | Status |
+|--------------|--------|
+| Isolated Entra tenant | Not provisioned by project owner |
+| M365 trial/test mailbox | Not provisioned |
+| Outlook.com test account | Not provisioned |
+| Entra app (multi-account) | Not registered |
+| Worker on `outlook-notifier.hoadev.com` | Not deployed |
+
+**Do not mark Phase 2 complete until live A1–A7 matrix is filled with sanitized evidence.**
+
 ## Next Steps
 
 - Phase 3 adjudicates evidence; it does not rerun the experiment with changed scopes silently.
+- Owner action: provision infrastructure, then re-run cook/PoC steps 4–12.

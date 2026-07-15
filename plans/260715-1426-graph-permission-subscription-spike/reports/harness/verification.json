@@ -1,0 +1,29 @@
+{
+  "phase1": {
+    "status": "completed",
+    "artifact": "docs/spikes/graph-permission-subscription-spike.md",
+    "accessDate": "2026-07-15"
+  },
+  "phase2": {
+    "status": "blocked",
+    "harnessCreated": true,
+    "liveEvidence": false,
+    "blockers": [
+      "isolated_entra_tenant",
+      "m365_test_mailbox",
+      "outlook_com_test_account",
+      "entra_app_registration",
+      "worker_custom_hostname"
+    ]
+  },
+  "phase3": {
+    "status": "completed_exit_blocked",
+    "adrs": [
+      "docs/decisions/graph-permission-and-fields.md",
+      "docs/decisions/graph-subscription-contract.md"
+    ],
+    "exitGate": "blocked"
+  },
+  "secretScan": "pass",
+  "tests": "n/a_no_package_json"
+}
