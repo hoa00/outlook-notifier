@@ -9,6 +9,8 @@ effort: "0.5-1 day"
 
 # Phase 3: Decide permission and subscription baseline
 
+<!-- Updated: Validation Session 1 - conditional delegated Mail.Read approved, unsupported tenant policy locked for MVP -->
+
 ## Context Links
 
 - Phase 1 official-contract matrix.
@@ -30,10 +32,14 @@ Convert evidence into reviewable ADRs and a clear go/reduce-scope/blocked decisi
 Decision tree:
 
 ```text
-Mail.ReadBasic subscription + minimal GET pass
+Mail.ReadBasic subscription + minimal GET pass on both account tracks
   -> lock Mail.ReadBasic and supported field subset
 subscription fails but GET passes
-  -> BLOCK; owner chooses product feasibility vs approved Mail.Read comparison
+  -> review evidence; run approved delegated Mail.Read comparison
+Mail.Read comparison passes
+  -> ADR may select delegated Mail.Read with explicit privacy rationale
+tenant blocks user consent
+  -> unsupported_tenant_consent_policy; no admin workflow in MVP
 field fails
   -> drop field first; no automatic permission expansion
 evidence incomplete
@@ -51,11 +57,12 @@ evidence incomplete
 ## Implementation Steps
 
 1. Review evidence completeness and privacy scan before interpreting results.
-2. Produce ADR for permission and final field subset, with alternatives: keep baseline, reduce fields, approve broader scope, or stop feasibility.
+2. Produce ADR for permission and final field subset, with alternatives: keep `Mail.ReadBasic`, reduce fields, select the approved delegated `Mail.Read` fallback, or stop feasibility. Application permission remains prohibited.
 3. Produce ADR for basic notification contract: resource path, `created`, ID extraction, validation response, lifecycle support, maximum lifetime source/date and conservative renewal configuration rule.
-4. Assign owner and status to any tenant-model limitation; do not claim untested account coverage.
-5. Update roadmap/README only for approved decisions; retain history and rationale.
-6. Publish a handoff checklist for the next Chặng 0 plan and Phase 1 foundation.
+4. Record MVP consent policy: user self-consent only; tenant-policy denial is unsupported; admin-consent onboarding belongs to a future upgrade phase.
+5. Compare personal and work/school evidence separately; do not claim untested tenant coverage.
+6. Update roadmap/README only for approved decisions; retain history and rationale.
+7. Publish a handoff checklist for the next Chặng 0 plan and Phase 1 foundation.
 
 ## Todo List
 
@@ -63,12 +70,15 @@ evidence incomplete
 - [ ] Decide permission and field subset.
 - [ ] Decide subscription contract baseline.
 - [ ] Record blockers/owners.
+- [ ] Record unsupported tenant behavior and deferred admin-consent flow.
 - [ ] Update affected docs only after approval.
 
 ## Success Criteria
 
 - [ ] ADRs cite official sources and sanitized live evidence.
-- [ ] Permission is `Mail.ReadBasic` or an explicit unresolved/approved exception; never an implicit upgrade.
+- [ ] Permission is `Mail.ReadBasic` or the explicitly approved delegated `Mail.Read` fallback backed by PoC evidence; never application permission or implicit upgrade.
+- [ ] ADR covers both personal and work/school account results.
+- [ ] Tenant-policy denial has a sanitized user-facing error contract and no admin-consent path in MVP.
 - [ ] Every requested field is `supported`, `dropped`, or `blocked`.
 - [ ] Subsequent implementation plans can consume a precise subscription contract.
 - [ ] Exit gate states `go`, `reduce scope`, or `blocked` with evidence.
@@ -97,4 +107,3 @@ evidence incomplete
 
 - If `go`: plan the remaining Chặng 0 Telegram/architecture decisions, then Foundation.
 - If `blocked`: request the specific product/security decision; do not recommend implementation cook.
-
